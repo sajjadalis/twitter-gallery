@@ -61,7 +61,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					Clear
+					Clear All
 				</div>
 			</button>
 		</div>
@@ -106,7 +106,7 @@
 			@click.prevent="next(next_token)"
 			class="uppercase font-bold my-5"
 		>
-			Load More Photos...
+			Load More Photos
 		</t-button>
 
 		<t-alert v-if="found > 0 && !next_token" show>

@@ -32,7 +32,7 @@ const settings = {
 		component: TButton,
 		props: {
 			classes:
-				"w-full rounded bg-blue-500 text-white hover:bg-blue-600 p-2 border-2 border-transparent",
+				"w-full rounded bg-red-500 text-white hover:bg-red-600 p-2 border-2 border-transparent",
 		},
 	},
 	"t-alert": {

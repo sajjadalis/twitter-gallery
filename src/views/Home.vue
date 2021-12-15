@@ -45,7 +45,7 @@
 				</button>
 			</span>
 			<button
-				class="border bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded"
+				class="border bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
 				@click.prevent="clearHistory()"
 			>
 				<div class="flex items-center">
@@ -66,7 +66,13 @@
 			</button>
 		</div>
 
-		<t-alert v-if="found > 0" class="mb-5" variant="success" show>
+		<t-alert
+			v-if="found > 0"
+			class="mb-5"
+			variant="success"
+			:dismissible="false"
+			show
+		>
 			{{ found }} <span v-if="found == 1">photo</span
 			><span v-else>photos</span> found in {{ result_count }} tweets
 		</t-alert>
@@ -98,9 +104,9 @@
 		<t-button
 			v-if="next_token"
 			@click.prevent="next(next_token)"
-			class="my-5"
+			class="uppercase font-bold my-5"
 		>
-			Load More...
+			Load More Photos...
 		</t-button>
 
 		<t-alert v-if="found > 0 && !next_token" show>
@@ -297,10 +303,10 @@ export default {
 	-moz-animation: rotation 0.6s infinite linear;
 	-o-animation: rotation 0.6s infinite linear;
 	animation: rotation 0.6s infinite linear;
-	border-left: 6px solid rgba(0, 174, 239, 0.15);
-	border-right: 6px solid rgba(0, 174, 239, 0.15);
-	border-bottom: 6px solid rgba(0, 174, 239, 0.15);
-	border-top: 6px solid rgba(0, 174, 239, 0.8);
+	border-left: 6px solid rgba(231, 18, 18, 0.15);
+	border-right: 6px solid rgba(231, 18, 18, 0.15);
+	border-bottom: 6px solid rgba(231, 18, 18, 0.15);
+	border-top: 6px solid rgba(239, 68, 68, 1);
 	border-radius: 100%;
 }
 

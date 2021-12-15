@@ -1,0 +1,48 @@
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+
+import Lightbox from "@morioh/v-lightbox";
+Vue.use(Lightbox);
+
+import VueEasyLightbox from "vue-easy-lightbox";
+Vue.use(VueEasyLightbox);
+
+import VueMasonry from "vue-masonry-css";
+Vue.use(VueMasonry);
+
+import "./main.css";
+import VueTailwind from "vue-tailwind";
+
+import {
+	TInput,
+	TButton,
+	TInputGroup,
+	TAlert,
+} from "vue-tailwind/dist/components";
+
+const settings = {
+	"t-input": {
+		component: TInput,
+		props: {
+			classes: "border-2 block w-full rounded text-gray-800",
+		},
+	},
+	"t-button": {
+		component: TButton,
+		props: {
+			classes: "border-2 block w-full rounded text-gray-800",
+		},
+	},
+};
+
+Vue.use(VueTailwind, settings);
+
+Vue.config.productionTip = false;
+
+new Vue({
+	router,
+	render: function (h) {
+		return h(App);
+	},
+}).$mount("#app");

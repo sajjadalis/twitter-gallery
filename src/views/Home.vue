@@ -264,7 +264,7 @@ export default {
 			this.recent_searches = [];
 		},
 		removeItem(i) {
-			console.log(i, "remove");
+			// console.log(i, "remove");
 			this.recent_searches.splice(i, 1);
 			localStorage.setItem(
 				"recent_searches",

@@ -1,8 +1,31 @@
 <template>
 	<div class="container mx-auto">
-		<form class="flex mb-5" @submit.prevent="getImages">
-			<div class="flex-1 w-64 mr-2">
-				<t-input name="twt_usr" v-model="user" />
+		<form class="flex" @submit.prevent="getImages">
+			<div class="relative flex-1 w-64 mr-2">
+				<t-input
+					type="text"
+					name="twt_usr"
+					data-lpignore="true"
+					v-model="user"
+				/>
+				<button
+					class="absolute top-0 right-0 mt-3 mr-3 text-gray-400 hover:text-gray-600"
+					v-if="user"
+					@click.prevent="user = ''"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				</button>
 			</div>
 			<div class="w-32 mr-2">
 				<t-input type="number" v-model="results" />
@@ -99,7 +122,7 @@
 			</masonry>
 		</div>
 
-		<div v-if="loading" class="spinner"></div>
+		<div v-if="loading" class="spinner my-10"></div>
 
 		<t-button
 			v-if="next_token"
@@ -174,24 +197,28 @@ export default {
 			}
 
 			if (this.user) {
-				api.get(`by/username/${this.user}`)
-					.then((res) => {
-						// console.log(res.data);
+				api.get(`by/username/${this.user}`).then((res) => {
+					// console.log(res.data);
 
-						if (!res.data.hasOwnProperty("data")) {
-							this.msg = "User not found";
-							this.loading = false;
-							return;
-						}
+					if (!res.data.hasOwnProperty("data")) {
+						this.msg = "User not found";
+						this.loading = false;
+						return;
+					}
 
-						this.userId = res.data.data.id;
+					this.userId = res.data.data.id;
 
-						this.search_params = `max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
+					this.search_params = `max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
 
-						api.get(
-							`${this.userId}/tweets?${this.search_params}`
-						).then((res) => {
+					api.get(`${this.userId}/tweets?${this.search_params}`)
+						.then((res) => {
 							console.log(res.data);
+
+							if (res.data.errors) {
+								this.msg = res.data.errors[0].detail;
+								this.loading = false;
+								return;
+							}
 
 							if (!res.data.hasOwnProperty("includes")) {
 								this.msg = `No photo found in ${this.searched} tweets `;
@@ -217,11 +244,11 @@ export default {
 							this.found = this.imgs.length;
 
 							this.loading = false;
+						})
+						.catch((err) => {
+							console.log(err);
 						});
-					})
-					.catch((err) => {
-						console.log(err);
-					});
+				});
 			}
 		},
 		showImg(index) {

@@ -1,57 +1,115 @@
 <template>
 	<div class="container mx-auto">
-		<form class="flex p-3" @submit.prevent="getImages">
-			<div class="flex-1 w-64 p-2">
+		<form class="flex mb-5" @submit.prevent="getImages">
+			<div class="flex-1 w-64 mr-2">
 				<t-input name="twt_usr" v-model="user" />
 			</div>
-			<div class="flex-1 w-64 p-2">
+			<div class="w-32 mr-2">
 				<t-input type="number" v-model="results" />
 			</div>
-			<t-button type="submit" class="flex-1 w-32 bg-gray-300"
-				>Get Images</t-button
-			>
+			<div class="w-60">
+				<t-button type="submit" class="uppercase font-bold"
+					>Get Photos</t-button
+				>
+			</div>
 		</form>
 
-		<div v-if="imgs.length > 0" style="margin-bottom: 20px">
-			<h3>
-				{{ found }} <span v-if="found == 1">photo</span
-				><span v-else>photos</span> found in {{ result_count }} tweets
-			</h3>
+		<div v-if="recent_searches.length > 0" class="block my-5">
+			<span class="mr-2 font-bold">Recent Search History:</span>
+			<span
+				class="relative"
+				v-for="(keyword, i) in recent_searches"
+				:key="i"
+			>
+				<span
+					class="border bg-gray-100 hover:bg-gray-200 py-1 px-2 mr-2 rounded cursor-pointer"
+					@click.prevent="(user = keyword), getImages()"
+					>{{ keyword }}
+				</span>
+				<button
+					class="absolute top-0 right-0"
+					@click.prevent="removeItem(i)"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-4 w-4 mr-1 -mt-2 text-gray-600 hover:text-red-600"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				</button>
+			</span>
+			<button
+				class="border bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded"
+				@click.prevent="clearHistory()"
+			>
+				<div class="flex items-center">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-4 w-4 mr-1"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+					Clear
+				</div>
+			</button>
 		</div>
 
-		<!-- all props & events -->
-		<vue-easy-lightbox
-			escDisabled
-			moveDisabled
-			:visible="visible"
-			:imgs="imgs"
-			:index="index"
-			@hide="handleHide"
-		></vue-easy-lightbox>
-		<masonry :cols="5" :gutter="10">
-			<div
-				v-for="(src, index) in imgs"
-				:key="index"
-				class="pic"
-				@click="() => showImg(index)"
-			>
-				<img class="item" :src="src" />
-			</div>
-		</masonry>
+		<t-alert v-if="found > 0" class="mb-5" variant="success" show>
+			{{ found }} <span v-if="found == 1">photo</span
+			><span v-else>photos</span> found in {{ result_count }} tweets
+		</t-alert>
 
-		<button
-			v-if="next_token"
-			@click.prevent="next(next_token)"
-			style="margin-top: 20px"
-		>
-			Next
-		</button>
+		<!-- all props & events -->
+		<div>
+			<vue-easy-lightbox
+				escDisabled
+				moveDisabled
+				:visible="visible"
+				:imgs="imgs"
+				:index="index"
+				@hide="handleHide"
+			></vue-easy-lightbox>
+			<masonry :cols="5" :gutter="10">
+				<div
+					v-for="(src, index) in imgs"
+					:key="index"
+					class="pic"
+					@click="() => showImg(index)"
+				>
+					<img class="item" :src="src" />
+				</div>
+			</masonry>
+		</div>
 
 		<div v-if="loading" class="spinner"></div>
 
-		<div v-if="msg">
-			<h3>{{ msg }}</h3>
-		</div>
+		<t-button
+			v-if="next_token"
+			@click.prevent="next(next_token)"
+			class="my-5"
+		>
+			Load More...
+		</t-button>
+
+		<t-alert v-if="found > 0 && !next_token" show>
+			All Done. No more tweets found...
+		</t-alert>
+
+		<t-alert v-if="msg" variant="danger" show>
+			{{ msg }}
+		</t-alert>
 	</div>
 </template>
 
@@ -60,6 +118,8 @@
 import VueEasyLightbox from "vue-easy-lightbox";
 import axios from "axios";
 import api from "@/api";
+
+let history = JSON.parse(localStorage.getItem("recent_searches"));
 
 export default {
 	components: {
@@ -79,13 +139,27 @@ export default {
 			loading: false,
 			result_count: 0,
 			next_token: "",
+			recent_searches: history ? history : [],
 		};
+	},
+	mounted() {
+		console.log(JSON.parse(localStorage.getItem("recent_searches")));
 	},
 	methods: {
 		getImages() {
 			this.imgs = [];
 			this.msg = "";
 			this.loading = true;
+
+			if (!this.recent_searches.includes(this.user)) {
+				this.recent_searches.push(this.user);
+				localStorage.setItem(
+					"recent_searches",
+					JSON.stringify(this.recent_searches)
+				);
+			}
+
+			console.log(JSON.parse(localStorage.getItem("recent_searches")));
 
 			if (this.results < 5) {
 				this.msg = "Minimum results for tweets can not be less than 5";
@@ -152,6 +226,8 @@ export default {
 			this.visible = false;
 		},
 		next(token) {
+			this.loading = true;
+
 			api.get(
 				`${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
 			).then((res) => {
@@ -183,6 +259,18 @@ export default {
 				this.loading = false;
 			});
 		},
+		clearHistory() {
+			localStorage.removeItem("recent_searches");
+			this.recent_searches = [];
+		},
+		removeItem(i) {
+			console.log(i, "remove");
+			this.recent_searches.splice(i, 1);
+			localStorage.setItem(
+				"recent_searches",
+				JSON.stringify(this.recent_searches)
+			);
+		},
 	},
 };
 </script>
@@ -202,9 +290,6 @@ export default {
 	cursor: pointer;
 }
 .spinner {
-	position: absolute;
-	left: 50%;
-	top: 50%;
 	height: 60px;
 	width: 60px;
 	margin: 0px auto;

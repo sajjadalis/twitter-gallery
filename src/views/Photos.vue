@@ -271,7 +271,7 @@ export default {
 			this.loading = true;
 
 			api.get(
-				`${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
+				`2/users/${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
 			).then((res) => {
 				console.log(res.data);
 

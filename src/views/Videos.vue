@@ -31,7 +31,9 @@
 				<t-input type="number" v-model="results" />
 			</div>
 			<div class="w-60">
-				<t-button type="submit" class="uppercase font-bold"
+				<t-button
+					type="submit"
+					class="bg-blue-500 hover:bg-blue-600 uppercase font-bold"
 					>Get Videos</t-button
 				>
 			</div>
@@ -46,7 +48,7 @@
 			>
 				<span
 					class="border bg-gray-100 hover:bg-gray-200 py-1 px-2 mr-2 rounded cursor-pointer"
-					@click.prevent="(user = keyword), getPhotos()"
+					@click.prevent="(user = keyword), getVideos()"
 					>{{ keyword }}
 				</span>
 				<button
@@ -55,7 +57,7 @@
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-4 w-4 mr-1 -mt-2 text-gray-600 hover:text-red-600"
+						class="h-4 w-4 mr-1 -mt-2 text-gray-600 hover:text-blue-600"
 						viewBox="0 0 20 20"
 						fill="currentColor"
 					>
@@ -68,7 +70,7 @@
 				</button>
 			</span>
 			<button
-				class="border bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
+				class="border bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded"
 				@click.prevent="clearHistory()"
 			>
 				<div class="flex items-center">
@@ -103,7 +105,7 @@
 		<div v-if="videos.length > 0">
 			<masonry :cols="4" :gutter="10">
 				<div v-for="(video, i) in videos" :key="i">
-					<a href="#" @click.prevent="videoShow"
+					<a href="#" @click.prevent="videoShow(video)"
 						><img class="item" :src="video.image"
 					/></a>
 					<!-- <Artplayer
@@ -123,35 +125,15 @@
 						}"
 						:style="style"
 					/> -->
-
-					<transition name="ctvf-popup" type="animation">
-						<div
-							v-if="vidShow"
-							class="ctvf-vidshow"
-							v-on:click="videoShow"
-						>
-							<Artplayer
-								:option="{
-									url: video.url,
-									poster: video.image,
-									// autoSize: true,
-									hotkey: true,
-									loop: true,
-									mutex: true,
-									fullscreen: true,
-									fullscreenWeb: true,
-									miniProgressBar: true,
-									flip: true,
-									playbackRate: true,
-									setting: true,
-								}"
-								:style="style"
-							/>
-						</div>
-					</transition>
 				</div>
 			</masonry>
 		</div>
+
+		<ShowVideo
+			v-if="vidShow"
+			:video="singleVideo"
+			@close="vidShow = false"
+		/>
 
 		<div v-if="loading" class="spinner my-10"></div>
 
@@ -176,7 +158,7 @@
 <script>
 // Method.3 Local registration
 import VueEasyLightbox from "vue-easy-lightbox";
-import axios from "axios";
+import ShowVideo from "@/components/ShowVideo.vue";
 import api from "@/api";
 import Artplayer from "artplayer/examples/vue/Artplayer";
 
@@ -186,7 +168,7 @@ export default {
 	components: {
 		VueEasyLightbox,
 		Artplayer,
-		FsLightbox,
+		ShowVideo,
 	},
 	data() {
 		return {
@@ -210,6 +192,7 @@ export default {
 				margin: "0 auto 10px",
 			},
 			vidShow: false,
+			singleVideo: {},
 		};
 	},
 	methods: {
@@ -228,8 +211,9 @@ export default {
 
 			// console.log(JSON.parse(localStorage.getItem("recent_searches")));
 
-			if (this.results < 5) {
-				this.msg = "Minimum results for tweets can not be less than 5";
+			if (this.results < 5 || this.results > 100) {
+				this.msg =
+					"Minimum tweets can not be less than 5 or more than 100";
 				this.loading = false;
 				return;
 			}
@@ -298,8 +282,8 @@ export default {
 									});
 								})
 								.map(function (o) {
-									// use reduce to make objects with only the required properties
-									return props.reduce(function (newo, id) {
+									// use blueuce to make objects with only the requiblue properties
+									return props.blueuce(function (newo, id) {
 										newo[id] = o[id];
 										return newo;
 									}, {});
@@ -324,7 +308,7 @@ export default {
 										});
 										// time to get video with higher bitrate
 										let video_with_higher_bitrate =
-											videos.reduce(function (
+											videos.blueuce(function (
 												prev,
 												current
 											) {
@@ -414,8 +398,8 @@ export default {
 						});
 					})
 					.map(function (o) {
-						// use reduce to make objects with only the required properties
-						return props.reduce(function (newo, id) {
+						// use blueuce to make objects with only the requiblue properties
+						return props.blueuce(function (newo, id) {
 							newo[id] = o[id];
 							return newo;
 						}, {});
@@ -438,7 +422,7 @@ export default {
 									}
 								});
 								// time to get video with higher bitrate
-								let video_with_higher_bitrate = videos.reduce(
+								let video_with_higher_bitrate = videos.blueuce(
 									function (prev, current) {
 										return prev.bitrate > current.bitrate
 											? prev
@@ -484,8 +468,10 @@ export default {
 				JSON.stringify(this.recent_searches)
 			);
 		},
-		videoShow() {
-			this.vidShow = !this.vidShow;
+		videoShow(video) {
+			this.vidShow = true;
+			console.log(video);
+			this.singleVideo = video;
 		},
 	},
 };

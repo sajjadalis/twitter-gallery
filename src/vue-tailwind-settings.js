@@ -13,7 +13,7 @@ const settings = {
 		component: TButton,
 		props: {
 			classes:
-				"w-full rounded bg-red-500 text-white hover:bg-red-600 p-2 border-2 border-transparent",
+				"w-full rounded text-white bg-red-500 hover:bg-red-600 p-2 border-2 border-transparent",
 		},
 	},
 	"t-alert": {

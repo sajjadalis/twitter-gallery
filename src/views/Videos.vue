@@ -1,6 +1,6 @@
 <template>
 	<div class="container mx-auto">
-		<form class="flex" @submit.prevent="getImages">
+		<form class="flex" @submit.prevent="getPhotos">
 			<div class="relative flex-1 w-64 mr-2">
 				<t-input
 					type="text"
@@ -46,7 +46,7 @@
 			>
 				<span
 					class="border bg-gray-100 hover:bg-gray-200 py-1 px-2 mr-2 rounded cursor-pointer"
-					@click.prevent="(user = keyword), getImages()"
+					@click.prevent="(user = keyword), getPhotos()"
 					>{{ keyword }}
 				</span>
 				<button
@@ -110,7 +110,7 @@
 				:index="index"
 				@hide="handleHide"
 			></vue-easy-lightbox>
-			<masonry :cols="5" :gutter="10">
+			<masonry :cols="4" :gutter="10">
 				<div
 					v-for="(src, index) in imgs"
 					:key="index"
@@ -126,19 +126,43 @@
 
 		<t-button
 			v-if="next_token"
-			@click.prevent="next(next_token)"
+			@click.prevent="nextPhotos(next_token)"
 			class="uppercase font-bold my-5"
 		>
 			Load More Photos
 		</t-button>
 
-		<t-alert v-if="found > 0 && !next_token" show>
+		<t-alert class="my-5" v-if="found > 0 && !next_token" show>
 			All Done. No more tweets found...
 		</t-alert>
 
-		<t-alert v-if="msg" variant="danger" show>
+		<t-alert class="my-5" v-if="msg" variant="danger" show>
 			{{ msg }}
 		</t-alert>
+
+		<div v-if="videos.length > 0">
+			<masonry :cols="4" :gutter="10">
+				<div v-for="(video, i) in videos" :key="i">
+					<Artplayer
+						:option="{
+							url: video.url,
+							poster: video.image,
+							// autoSize: true,
+							hotkey: true,
+							loop: true,
+							mutex: true,
+							fullscreen: true,
+							fullscreenWeb: true,
+							miniProgressBar: true,
+							flip: true,
+							playbackRate: true,
+							setting: true,
+						}"
+						:style="style"
+					/>
+				</div>
+			</masonry>
+		</div>
 	</div>
 </template>
 
@@ -147,12 +171,14 @@
 import VueEasyLightbox from "vue-easy-lightbox";
 import axios from "axios";
 import api from "@/api";
+import Artplayer from "artplayer/examples/vue/Artplayer";
 
 let history = JSON.parse(localStorage.getItem("recent_searches"));
 
 export default {
 	components: {
 		VueEasyLightbox,
+		Artplayer,
 	},
 	data() {
 		return {
@@ -169,13 +195,109 @@ export default {
 			result_count: 0,
 			next_token: "",
 			recent_searches: history ? history : [],
+			videos: [],
+			style: {
+				width: "100%",
+				height: "300px",
+				margin: "0 auto 10px",
+			},
 		};
 	},
 	mounted() {
-		console.log(JSON.parse(localStorage.getItem("recent_searches")));
+		let userId = "70725281";
+		// let userId = "1461272624575700995";
+		api.get(
+			`${userId}/tweets?max_results=20&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`
+		)
+			.then((res) => {
+				console.log(res.data);
+				let tweets = res.data.data;
+				let media = res.data.includes.media;
+				var props = ["id"];
+				var result = tweets
+					.filter(function (o1) {
+						// filter out (!) items in media
+						return media.some(function (o2) {
+							if (
+								o1.hasOwnProperty("attachments") &&
+								o1.attachments.hasOwnProperty("media_keys")
+							) {
+								if (o2.type == "video") {
+									return o1.attachments.media_keys.includes(
+										o2.media_key
+									);
+								}
+							}
+						});
+					})
+					.map(function (o) {
+						// use reduce to make objects with only the required properties
+						return props.reduce(function (newo, id) {
+							newo[id] = o[id];
+							return newo;
+						}, {});
+					});
+				console.log(result);
+				result.forEach((tweet) => {
+					axios
+						.get(
+							`https://ctvf-cors.herokuapp.com/https://api.twitter.com/1.1/statuses/show/${tweet.id}.json`,
+							{
+								headers: {
+									Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAALGYOAEAAAAA9tLIFSW%2FsMRGH1ggf2bHqGV8J3k%3DRE0YtlHOw2yrQ1A1bVcud7233JpsV3Mv1qQ22RoxainR0fA4st`,
+								},
+							}
+						)
+						.then((res) => {
+							// check if extended objects exists containing video urls
+							if (res.data.extended_entities) {
+								// get array of all video variants
+								let videoArr =
+									res.data.extended_entities.media[0]
+										.video_info.variants;
+								// let find only mp4 files and push them to new videos array
+								let videos = [];
+								videoArr.forEach((v) => {
+									if (v.content_type == "video/mp4") {
+										videos.push(v);
+									}
+								});
+								// time to get video with higher bitrate
+								let video_with_higher_bitrate = videos.reduce(
+									function (prev, current) {
+										return prev.bitrate > current.bitrate
+											? prev
+											: current;
+									}
+								);
+								// console.log(video_with_higher_bitrate);
+								// get video sizes
+								let sizes =
+									res.data.extended_entities.media[0].sizes;
+								// create image url object
+								let image = {
+									image: res.data.extended_entities.media[0]
+										.media_url_https,
+								};
+								// create new object with each vide, sizes & image url
+								let newObj = {
+									...video_with_higher_bitrate,
+									...sizes,
+									...image,
+								};
+								// push newly created object to videos array
+								this.videos.push(newObj);
+							}
+						});
+				});
+				// console.log(this.videos);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	},
 	methods: {
-		getImages() {
+		getVideos() {
 			this.imgs = [];
 			this.msg = "";
 			this.loading = true;
@@ -188,7 +310,7 @@ export default {
 				);
 			}
 
-			console.log(JSON.parse(localStorage.getItem("recent_searches")));
+			// console.log(JSON.parse(localStorage.getItem("recent_searches")));
 
 			if (this.results < 5) {
 				this.msg = "Minimum results for tweets can not be less than 5";
@@ -221,7 +343,9 @@ export default {
 							}
 
 							if (!res.data.hasOwnProperty("includes")) {
-								this.msg = `No photo found in ${this.searched} tweets `;
+								this.next_token = res.data.meta.next_token;
+								this.result_count = res.data.meta.result_count;
+								this.msg = `No photo found in ${this.result_count} tweets. Try to increase number of tweets`;
 								this.loading = false;
 								return;
 							}
@@ -258,7 +382,7 @@ export default {
 		handleHide() {
 			this.visible = false;
 		},
-		next(token) {
+		nextPhotos(token) {
 			this.loading = true;
 
 			api.get(
@@ -307,66 +431,3 @@ export default {
 	},
 };
 </script>
-<style>
-.container {
-	width: 79%;
-	margin: auto;
-}
-.form {
-	margin-bottom: 30px;
-}
-
-.item {
-	width: 280px;
-	height: auto;
-	margin-bottom: 8px;
-	cursor: pointer;
-}
-.spinner {
-	height: 60px;
-	width: 60px;
-	margin: 0px auto;
-	-webkit-animation: rotation 0.6s infinite linear;
-	-moz-animation: rotation 0.6s infinite linear;
-	-o-animation: rotation 0.6s infinite linear;
-	animation: rotation 0.6s infinite linear;
-	border-left: 6px solid rgba(231, 18, 18, 0.15);
-	border-right: 6px solid rgba(231, 18, 18, 0.15);
-	border-bottom: 6px solid rgba(231, 18, 18, 0.15);
-	border-top: 6px solid rgba(239, 68, 68, 1);
-	border-radius: 100%;
-}
-
-@-webkit-keyframes rotation {
-	from {
-		-webkit-transform: rotate(0deg);
-	}
-	to {
-		-webkit-transform: rotate(359deg);
-	}
-}
-@-moz-keyframes rotation {
-	from {
-		-moz-transform: rotate(0deg);
-	}
-	to {
-		-moz-transform: rotate(359deg);
-	}
-}
-@-o-keyframes rotation {
-	from {
-		-o-transform: rotate(0deg);
-	}
-	to {
-		-o-transform: rotate(359deg);
-	}
-}
-@keyframes rotation {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(359deg);
-	}
-}
-</style>

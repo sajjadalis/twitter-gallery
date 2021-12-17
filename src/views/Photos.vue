@@ -202,7 +202,7 @@ export default {
 			}
 
 			if (this.user) {
-				api.get(`by/username/${this.user}`).then((res) => {
+				api.get(`2/users/by/username/${this.user}`).then((res) => {
 					// console.log(res.data);
 
 					if (!res.data.hasOwnProperty("data")) {
@@ -215,7 +215,9 @@ export default {
 
 					this.search_params = `max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
 
-					api.get(`${this.userId}/tweets?${this.search_params}`)
+					api.get(
+						`2/users/${this.userId}/tweets?${this.search_params}`
+					)
 						.then((res) => {
 							console.log(res.data);
 

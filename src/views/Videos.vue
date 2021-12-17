@@ -103,7 +103,10 @@
 		<div v-if="videos.length > 0">
 			<masonry :cols="4" :gutter="10">
 				<div v-for="(video, i) in videos" :key="i">
-					<Artplayer
+					<a href="#" @click.prevent="videoShow"
+						><img class="item" :src="video.image"
+					/></a>
+					<!-- <Artplayer
 						:option="{
 							url: video.url,
 							poster: video.image,
@@ -119,7 +122,33 @@
 							setting: true,
 						}"
 						:style="style"
-					/>
+					/> -->
+
+					<transition name="ctvf-popup" type="animation">
+						<div
+							v-if="vidShow"
+							class="ctvf-vidshow"
+							v-on:click="videoShow"
+						>
+							<Artplayer
+								:option="{
+									url: video.url,
+									poster: video.image,
+									// autoSize: true,
+									hotkey: true,
+									loop: true,
+									mutex: true,
+									fullscreen: true,
+									fullscreenWeb: true,
+									miniProgressBar: true,
+									flip: true,
+									playbackRate: true,
+									setting: true,
+								}"
+								:style="style"
+							/>
+						</div>
+					</transition>
 				</div>
 			</masonry>
 		</div>
@@ -128,10 +157,10 @@
 
 		<t-button
 			v-if="next_token"
-			@click.prevent="nextPhotos(next_token)"
+			@click.prevent="nextVideos(next_token)"
 			class="uppercase font-bold my-5"
 		>
-			Load More Photos
+			Load More Videos
 		</t-button>
 
 		<t-alert class="my-5" v-if="found > 0 && !next_token" show>
@@ -157,13 +186,14 @@ export default {
 	components: {
 		VueEasyLightbox,
 		Artplayer,
+		FsLightbox,
 	},
 	data() {
 		return {
 			user: "BBCEarth",
 			userId: "",
 			search_params: "",
-			results: 50,
+			results: 10,
 			found: 0,
 			imgs: [], // Img Url , string or Array of string
 			visible: false,
@@ -179,104 +209,12 @@ export default {
 				height: "300px",
 				margin: "0 auto 10px",
 			},
+			vidShow: false,
 		};
 	},
-	// mounted() {
-	// 	let userId = "70725281";
-	// 	// let userId = "1461272624575700995";
-	// 	api.get(
-	// 		`${userId}/tweets?max_results=20&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`
-	// 	)
-	// 		.then((res) => {
-	// 			console.log(res.data);
-	// 			let tweets = res.data.data;
-	// 			let media = res.data.includes.media;
-	// 			var props = ["id"];
-	// 			var result = tweets
-	// 				.filter(function (o1) {
-	// 					// filter out (!) items in media
-	// 					return media.some(function (o2) {
-	// 						if (
-	// 							o1.hasOwnProperty("attachments") &&
-	// 							o1.attachments.hasOwnProperty("media_keys")
-	// 						) {
-	// 							if (o2.type == "video") {
-	// 								return o1.attachments.media_keys.includes(
-	// 									o2.media_key
-	// 								);
-	// 							}
-	// 						}
-	// 					});
-	// 				})
-	// 				.map(function (o) {
-	// 					// use reduce to make objects with only the required properties
-	// 					return props.reduce(function (newo, id) {
-	// 						newo[id] = o[id];
-	// 						return newo;
-	// 					}, {});
-	// 				});
-	// 			console.log(result);
-	// 			result.forEach((tweet) => {
-	// 				axios
-	// 					.get(
-	// 						`https://ctvf-cors.herokuapp.com/https://api.twitter.com/1.1/statuses/show/${tweet.id}.json`,
-	// 						{
-	// 							headers: {
-	// 								Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAALGYOAEAAAAA9tLIFSW%2FsMRGH1ggf2bHqGV8J3k%3DRE0YtlHOw2yrQ1A1bVcud7233JpsV3Mv1qQ22RoxainR0fA4st`,
-	// 							},
-	// 						}
-	// 					)
-	// 					.then((res) => {
-	// 						// check if extended objects exists containing video urls
-	// 						if (res.data.extended_entities) {
-	// 							// get array of all video variants
-	// 							let videoArr =
-	// 								res.data.extended_entities.media[0]
-	// 									.video_info.variants;
-	// 							// let find only mp4 files and push them to new videos array
-	// 							let videos = [];
-	// 							videoArr.forEach((v) => {
-	// 								if (v.content_type == "video/mp4") {
-	// 									videos.push(v);
-	// 								}
-	// 							});
-	// 							// time to get video with higher bitrate
-	// 							let video_with_higher_bitrate = videos.reduce(
-	// 								function (prev, current) {
-	// 									return prev.bitrate > current.bitrate
-	// 										? prev
-	// 										: current;
-	// 								}
-	// 							);
-	// 							// console.log(video_with_higher_bitrate);
-	// 							// get video sizes
-	// 							let sizes =
-	// 								res.data.extended_entities.media[0].sizes;
-	// 							// create image url object
-	// 							let image = {
-	// 								image: res.data.extended_entities.media[0]
-	// 									.media_url_https,
-	// 							};
-	// 							// create new object with each vide, sizes & image url
-	// 							let newObj = {
-	// 								...video_with_higher_bitrate,
-	// 								...sizes,
-	// 								...image,
-	// 							};
-	// 							// push newly created object to videos array
-	// 							this.videos.push(newObj);
-	// 						}
-	// 					});
-	// 			});
-	// 			// console.log(this.videos);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// },
 	methods: {
 		getVideos() {
-			this.imgs = [];
+			this.videos = [];
 			this.msg = "";
 			this.loading = true;
 
@@ -297,7 +235,7 @@ export default {
 			}
 
 			if (this.user) {
-				api.get(`by/username/${this.user}`).then((res) => {
+				api.get(`2/users/by/username/${this.user}`).then((res) => {
 					// console.log(res.data);
 
 					if (!res.data.hasOwnProperty("data")) {
@@ -310,7 +248,9 @@ export default {
 
 					this.search_params = `max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
 
-					api.get(`${this.userId}/tweets?${this.search_params}`)
+					api.get(
+						`2/users/${this.userId}/tweets?${this.search_params}`
+					)
 						.then((res) => {
 							console.log(res.data);
 
@@ -366,67 +306,55 @@ export default {
 								});
 							console.log(result);
 							result.forEach((tweet) => {
-								axios
-									.get(
-										`https://ctvf-cors.herokuapp.com/https://api.twitter.com/1.1/statuses/show/${tweet.id}.json`,
-										{
-											headers: {
-												Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAALGYOAEAAAAA9tLIFSW%2FsMRGH1ggf2bHqGV8J3k%3DRE0YtlHOw2yrQ1A1bVcud7233JpsV3Mv1qQ22RoxainR0fA4st`,
-											},
-										}
-									)
-									.then((res) => {
-										// check if extended objects exists containing video urls
-										if (res.data.extended_entities) {
-											// get array of all video variants
-											let videoArr =
-												res.data.extended_entities
-													.media[0].video_info
-													.variants;
-											// let find only mp4 files and push them to new videos array
-											let videos = [];
-											videoArr.forEach((v) => {
-												if (
-													v.content_type ==
-													"video/mp4"
-												) {
-													videos.push(v);
-												}
+								api.get(
+									`1.1/statuses/show/${tweet.id}.json`
+								).then((res) => {
+									// check if extended objects exists containing video urls
+									if (res.data.extended_entities) {
+										// get array of all video variants
+										let videoArr =
+											res.data.extended_entities.media[0]
+												.video_info.variants;
+										// let find only mp4 files and push them to new videos array
+										let videos = [];
+										videoArr.forEach((v) => {
+											if (v.content_type == "video/mp4") {
+												videos.push(v);
+											}
+										});
+										// time to get video with higher bitrate
+										let video_with_higher_bitrate =
+											videos.reduce(function (
+												prev,
+												current
+											) {
+												return prev.bitrate >
+													current.bitrate
+													? prev
+													: current;
 											});
-											// time to get video with higher bitrate
-											let video_with_higher_bitrate =
-												videos.reduce(function (
-													prev,
-													current
-												) {
-													return prev.bitrate >
-														current.bitrate
-														? prev
-														: current;
-												});
-											// console.log(video_with_higher_bitrate);
-											// get video sizes
-											let sizes =
-												res.data.extended_entities
-													.media[0].sizes;
-											// create image url object
-											let image = {
-												image: res.data
-													.extended_entities.media[0]
-													.media_url_https,
-											};
-											// create new object with each vide, sizes & image url
-											let newObj = {
-												...video_with_higher_bitrate,
-												...sizes,
-												...image,
-											};
-											// push newly created object to videos array
-											this.videos.push(newObj);
+										// console.log(video_with_higher_bitrate);
+										// get video sizes
+										let sizes =
+											res.data.extended_entities.media[0]
+												.sizes;
+										// create image url object
+										let image = {
+											image: res.data.extended_entities
+												.media[0].media_url_https,
+										};
+										// create new object with each vide, sizes & image url
+										let newObj = {
+											...video_with_higher_bitrate,
+											...sizes,
+											...image,
+										};
+										// push newly created object to videos array
+										this.videos.push(newObj);
 
-											this.found = this.videos.length;
-										}
-									});
+										this.found = this.videos.length;
+									}
+								});
 							});
 							// console.log(this.videos);
 
@@ -445,11 +373,11 @@ export default {
 		handleHide() {
 			this.visible = false;
 		},
-		nextPhotos(token) {
+		nextVideos(token) {
 			this.loading = true;
 
 			api.get(
-				`${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
+				`2/users/${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
 			).then((res) => {
 				console.log(res.data);
 
@@ -466,15 +394,80 @@ export default {
 					this.result_count = this.results;
 				}
 
-				let data = res.data.includes.media;
+				let tweets = res.data.data;
+				let media = res.data.includes.media;
+				let props = ["id"];
+				let result = tweets
+					.filter(function (o1) {
+						// filter out (!) items in media
+						return media.some(function (o2) {
+							if (
+								o1.hasOwnProperty("attachments") &&
+								o1.attachments.hasOwnProperty("media_keys")
+							) {
+								if (o2.type == "video") {
+									return o1.attachments.media_keys.includes(
+										o2.media_key
+									);
+								}
+							}
+						});
+					})
+					.map(function (o) {
+						// use reduce to make objects with only the required properties
+						return props.reduce(function (newo, id) {
+							newo[id] = o[id];
+							return newo;
+						}, {});
+					});
+				console.log(result);
+				result.forEach((tweet) => {
+					api.get(`1.1/statuses/show/${tweet.id}.json`).then(
+						(res) => {
+							// check if extended objects exists containing video urls
+							if (res.data.extended_entities) {
+								// get array of all video variants
+								let videoArr =
+									res.data.extended_entities.media[0]
+										.video_info.variants;
+								// let find only mp4 files and push them to new videos array
+								let videos = [];
+								videoArr.forEach((v) => {
+									if (v.content_type == "video/mp4") {
+										videos.push(v);
+									}
+								});
+								// time to get video with higher bitrate
+								let video_with_higher_bitrate = videos.reduce(
+									function (prev, current) {
+										return prev.bitrate > current.bitrate
+											? prev
+											: current;
+									}
+								);
+								// console.log(video_with_higher_bitrate);
+								// get video sizes
+								let sizes =
+									res.data.extended_entities.media[0].sizes;
+								// create image url object
+								let image = {
+									image: res.data.extended_entities.media[0]
+										.media_url_https,
+								};
+								// create new object with each vide, sizes & image url
+								let newObj = {
+									...video_with_higher_bitrate,
+									...sizes,
+									...image,
+								};
+								// push newly created object to videos array
+								this.videos.push(newObj);
 
-				data.forEach((img) => {
-					if (img.type == "photo") {
-						this.imgs.push(img.url);
-					}
+								this.found = this.videos.length;
+							}
+						}
+					);
 				});
-
-				this.found = this.imgs.length;
 
 				this.loading = false;
 			});
@@ -490,6 +483,9 @@ export default {
 				"recent_searches",
 				JSON.stringify(this.recent_searches)
 			);
+		},
+		videoShow() {
+			this.vidShow = !this.vidShow;
 		},
 	},
 };

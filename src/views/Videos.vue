@@ -1,6 +1,6 @@
 <template>
 	<div class="container mx-auto">
-		<form class="flex" @submit.prevent="getPhotos">
+		<form class="flex" @submit.prevent="getVideos">
 			<div class="relative flex-1 w-64 mr-2">
 				<t-input
 					type="text"
@@ -32,7 +32,7 @@
 			</div>
 			<div class="w-60">
 				<t-button type="submit" class="uppercase font-bold"
-					>Get Photos</t-button
+					>Get Videos</t-button
 				>
 			</div>
 		</form>
@@ -96,48 +96,8 @@
 			:dismissible="false"
 			show
 		>
-			{{ found }} <span v-if="found == 1">photo</span
-			><span v-else>photos</span> found in {{ result_count }} tweets
-		</t-alert>
-
-		<!-- all props & events -->
-		<div>
-			<vue-easy-lightbox
-				escDisabled
-				moveDisabled
-				:visible="visible"
-				:imgs="imgs"
-				:index="index"
-				@hide="handleHide"
-			></vue-easy-lightbox>
-			<masonry :cols="4" :gutter="10">
-				<div
-					v-for="(src, index) in imgs"
-					:key="index"
-					class="pic"
-					@click="() => showImg(index)"
-				>
-					<img class="item" :src="src" />
-				</div>
-			</masonry>
-		</div>
-
-		<div v-if="loading" class="spinner my-10"></div>
-
-		<t-button
-			v-if="next_token"
-			@click.prevent="nextPhotos(next_token)"
-			class="uppercase font-bold my-5"
-		>
-			Load More Photos
-		</t-button>
-
-		<t-alert class="my-5" v-if="found > 0 && !next_token" show>
-			All Done. No more tweets found...
-		</t-alert>
-
-		<t-alert class="my-5" v-if="msg" variant="danger" show>
-			{{ msg }}
+			{{ found }} <span v-if="found == 1">video</span
+			><span v-else>videos</span> found in {{ result_count }} tweets
 		</t-alert>
 
 		<div v-if="videos.length > 0">
@@ -163,6 +123,24 @@
 				</div>
 			</masonry>
 		</div>
+
+		<div v-if="loading" class="spinner my-10"></div>
+
+		<t-button
+			v-if="next_token"
+			@click.prevent="nextPhotos(next_token)"
+			class="uppercase font-bold my-5"
+		>
+			Load More Photos
+		</t-button>
+
+		<t-alert class="my-5" v-if="found > 0 && !next_token" show>
+			All Done. No more tweets found...
+		</t-alert>
+
+		<t-alert class="my-5" v-if="msg" variant="danger" show>
+			{{ msg }}
+		</t-alert>
 	</div>
 </template>
 
@@ -203,99 +181,99 @@ export default {
 			},
 		};
 	},
-	mounted() {
-		let userId = "70725281";
-		// let userId = "1461272624575700995";
-		api.get(
-			`${userId}/tweets?max_results=20&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`
-		)
-			.then((res) => {
-				console.log(res.data);
-				let tweets = res.data.data;
-				let media = res.data.includes.media;
-				var props = ["id"];
-				var result = tweets
-					.filter(function (o1) {
-						// filter out (!) items in media
-						return media.some(function (o2) {
-							if (
-								o1.hasOwnProperty("attachments") &&
-								o1.attachments.hasOwnProperty("media_keys")
-							) {
-								if (o2.type == "video") {
-									return o1.attachments.media_keys.includes(
-										o2.media_key
-									);
-								}
-							}
-						});
-					})
-					.map(function (o) {
-						// use reduce to make objects with only the required properties
-						return props.reduce(function (newo, id) {
-							newo[id] = o[id];
-							return newo;
-						}, {});
-					});
-				console.log(result);
-				result.forEach((tweet) => {
-					axios
-						.get(
-							`https://ctvf-cors.herokuapp.com/https://api.twitter.com/1.1/statuses/show/${tweet.id}.json`,
-							{
-								headers: {
-									Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAALGYOAEAAAAA9tLIFSW%2FsMRGH1ggf2bHqGV8J3k%3DRE0YtlHOw2yrQ1A1bVcud7233JpsV3Mv1qQ22RoxainR0fA4st`,
-								},
-							}
-						)
-						.then((res) => {
-							// check if extended objects exists containing video urls
-							if (res.data.extended_entities) {
-								// get array of all video variants
-								let videoArr =
-									res.data.extended_entities.media[0]
-										.video_info.variants;
-								// let find only mp4 files and push them to new videos array
-								let videos = [];
-								videoArr.forEach((v) => {
-									if (v.content_type == "video/mp4") {
-										videos.push(v);
-									}
-								});
-								// time to get video with higher bitrate
-								let video_with_higher_bitrate = videos.reduce(
-									function (prev, current) {
-										return prev.bitrate > current.bitrate
-											? prev
-											: current;
-									}
-								);
-								// console.log(video_with_higher_bitrate);
-								// get video sizes
-								let sizes =
-									res.data.extended_entities.media[0].sizes;
-								// create image url object
-								let image = {
-									image: res.data.extended_entities.media[0]
-										.media_url_https,
-								};
-								// create new object with each vide, sizes & image url
-								let newObj = {
-									...video_with_higher_bitrate,
-									...sizes,
-									...image,
-								};
-								// push newly created object to videos array
-								this.videos.push(newObj);
-							}
-						});
-				});
-				// console.log(this.videos);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	},
+	// mounted() {
+	// 	let userId = "70725281";
+	// 	// let userId = "1461272624575700995";
+	// 	api.get(
+	// 		`${userId}/tweets?max_results=20&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`
+	// 	)
+	// 		.then((res) => {
+	// 			console.log(res.data);
+	// 			let tweets = res.data.data;
+	// 			let media = res.data.includes.media;
+	// 			var props = ["id"];
+	// 			var result = tweets
+	// 				.filter(function (o1) {
+	// 					// filter out (!) items in media
+	// 					return media.some(function (o2) {
+	// 						if (
+	// 							o1.hasOwnProperty("attachments") &&
+	// 							o1.attachments.hasOwnProperty("media_keys")
+	// 						) {
+	// 							if (o2.type == "video") {
+	// 								return o1.attachments.media_keys.includes(
+	// 									o2.media_key
+	// 								);
+	// 							}
+	// 						}
+	// 					});
+	// 				})
+	// 				.map(function (o) {
+	// 					// use reduce to make objects with only the required properties
+	// 					return props.reduce(function (newo, id) {
+	// 						newo[id] = o[id];
+	// 						return newo;
+	// 					}, {});
+	// 				});
+	// 			console.log(result);
+	// 			result.forEach((tweet) => {
+	// 				axios
+	// 					.get(
+	// 						`https://ctvf-cors.herokuapp.com/https://api.twitter.com/1.1/statuses/show/${tweet.id}.json`,
+	// 						{
+	// 							headers: {
+	// 								Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAALGYOAEAAAAA9tLIFSW%2FsMRGH1ggf2bHqGV8J3k%3DRE0YtlHOw2yrQ1A1bVcud7233JpsV3Mv1qQ22RoxainR0fA4st`,
+	// 							},
+	// 						}
+	// 					)
+	// 					.then((res) => {
+	// 						// check if extended objects exists containing video urls
+	// 						if (res.data.extended_entities) {
+	// 							// get array of all video variants
+	// 							let videoArr =
+	// 								res.data.extended_entities.media[0]
+	// 									.video_info.variants;
+	// 							// let find only mp4 files and push them to new videos array
+	// 							let videos = [];
+	// 							videoArr.forEach((v) => {
+	// 								if (v.content_type == "video/mp4") {
+	// 									videos.push(v);
+	// 								}
+	// 							});
+	// 							// time to get video with higher bitrate
+	// 							let video_with_higher_bitrate = videos.reduce(
+	// 								function (prev, current) {
+	// 									return prev.bitrate > current.bitrate
+	// 										? prev
+	// 										: current;
+	// 								}
+	// 							);
+	// 							// console.log(video_with_higher_bitrate);
+	// 							// get video sizes
+	// 							let sizes =
+	// 								res.data.extended_entities.media[0].sizes;
+	// 							// create image url object
+	// 							let image = {
+	// 								image: res.data.extended_entities.media[0]
+	// 									.media_url_https,
+	// 							};
+	// 							// create new object with each vide, sizes & image url
+	// 							let newObj = {
+	// 								...video_with_higher_bitrate,
+	// 								...sizes,
+	// 								...image,
+	// 							};
+	// 							// push newly created object to videos array
+	// 							this.videos.push(newObj);
+	// 						}
+	// 					});
+	// 			});
+	// 			// console.log(this.videos);
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// },
 	methods: {
 		getVideos() {
 			this.imgs = [];
@@ -357,15 +335,100 @@ export default {
 								this.result_count = this.results;
 							}
 
-							let data = res.data.includes.media;
+							// console.log(res.data);
+							let tweets = res.data.data;
+							let media = res.data.includes.media;
+							let props = ["id"];
+							let result = tweets
+								.filter(function (o1) {
+									// filter out (!) items in media
+									return media.some(function (o2) {
+										if (
+											o1.hasOwnProperty("attachments") &&
+											o1.attachments.hasOwnProperty(
+												"media_keys"
+											)
+										) {
+											if (o2.type == "video") {
+												return o1.attachments.media_keys.includes(
+													o2.media_key
+												);
+											}
+										}
+									});
+								})
+								.map(function (o) {
+									// use reduce to make objects with only the required properties
+									return props.reduce(function (newo, id) {
+										newo[id] = o[id];
+										return newo;
+									}, {});
+								});
+							console.log(result);
+							result.forEach((tweet) => {
+								axios
+									.get(
+										`https://ctvf-cors.herokuapp.com/https://api.twitter.com/1.1/statuses/show/${tweet.id}.json`,
+										{
+											headers: {
+												Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAALGYOAEAAAAA9tLIFSW%2FsMRGH1ggf2bHqGV8J3k%3DRE0YtlHOw2yrQ1A1bVcud7233JpsV3Mv1qQ22RoxainR0fA4st`,
+											},
+										}
+									)
+									.then((res) => {
+										// check if extended objects exists containing video urls
+										if (res.data.extended_entities) {
+											// get array of all video variants
+											let videoArr =
+												res.data.extended_entities
+													.media[0].video_info
+													.variants;
+											// let find only mp4 files and push them to new videos array
+											let videos = [];
+											videoArr.forEach((v) => {
+												if (
+													v.content_type ==
+													"video/mp4"
+												) {
+													videos.push(v);
+												}
+											});
+											// time to get video with higher bitrate
+											let video_with_higher_bitrate =
+												videos.reduce(function (
+													prev,
+													current
+												) {
+													return prev.bitrate >
+														current.bitrate
+														? prev
+														: current;
+												});
+											// console.log(video_with_higher_bitrate);
+											// get video sizes
+											let sizes =
+												res.data.extended_entities
+													.media[0].sizes;
+											// create image url object
+											let image = {
+												image: res.data
+													.extended_entities.media[0]
+													.media_url_https,
+											};
+											// create new object with each vide, sizes & image url
+											let newObj = {
+												...video_with_higher_bitrate,
+												...sizes,
+												...image,
+											};
+											// push newly created object to videos array
+											this.videos.push(newObj);
 
-							data.forEach((img) => {
-								if (img.type == "photo") {
-									this.imgs.push(img.url);
-								}
+											this.found = this.videos.length;
+										}
+									});
 							});
-
-							this.found = this.imgs.length;
+							// console.log(this.videos);
 
 							this.loading = false;
 						})

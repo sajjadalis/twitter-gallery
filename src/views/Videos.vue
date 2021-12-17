@@ -108,23 +108,6 @@
 					<a href="#" @click.prevent="videoShow(video)"
 						><img class="item" :src="video.image"
 					/></a>
-					<!-- <Artplayer
-						:option="{
-							url: video.url,
-							poster: video.image,
-							// autoSize: true,
-							hotkey: true,
-							loop: true,
-							mutex: true,
-							fullscreen: true,
-							fullscreenWeb: true,
-							miniProgressBar: true,
-							flip: true,
-							playbackRate: true,
-							setting: true,
-						}"
-						:style="style"
-					/> -->
 				</div>
 			</masonry>
 		</div>
@@ -175,7 +158,7 @@ export default {
 			user: "BBCEarth",
 			userId: "",
 			search_params: "",
-			results: 10,
+			results: 50,
 			found: 0,
 			imgs: [], // Img Url , string or Array of string
 			visible: false,
@@ -273,7 +256,10 @@ export default {
 												"media_keys"
 											)
 										) {
-											if (o2.type == "video") {
+											if (
+												o2.type == "video" ||
+												o2.type == "animated_gif"
+											) {
 												return o1.attachments.media_keys.includes(
 													o2.media_key
 												);
@@ -282,8 +268,8 @@ export default {
 									});
 								})
 								.map(function (o) {
-									// use blueuce to make objects with only the requiblue properties
-									return props.blueuce(function (newo, id) {
+									// use reduce to make objects with only the requiblue properties
+									return props.reduce(function (newo, id) {
 										newo[id] = o[id];
 										return newo;
 									}, {});
@@ -291,7 +277,7 @@ export default {
 							console.log(result);
 							result.forEach((tweet) => {
 								api.get(
-									`1.1/statuses/show/${tweet.id}.json`
+									`1.1/statuses/show/${tweet.id}.json?tweet_mode=extended`
 								).then((res) => {
 									// check if extended objects exists containing video urls
 									if (res.data.extended_entities) {
@@ -308,7 +294,7 @@ export default {
 										});
 										// time to get video with higher bitrate
 										let video_with_higher_bitrate =
-											videos.blueuce(function (
+											videos.reduce(function (
 												prev,
 												current
 											) {
@@ -398,8 +384,8 @@ export default {
 						});
 					})
 					.map(function (o) {
-						// use blueuce to make objects with only the requiblue properties
-						return props.blueuce(function (newo, id) {
+						// use reduce to make objects with only the requiblue properties
+						return props.reduce(function (newo, id) {
 							newo[id] = o[id];
 							return newo;
 						}, {});
@@ -422,7 +408,7 @@ export default {
 									}
 								});
 								// time to get video with higher bitrate
-								let video_with_higher_bitrate = videos.blueuce(
+								let video_with_higher_bitrate = videos.reduce(
 									function (prev, current) {
 										return prev.bitrate > current.bitrate
 											? prev
@@ -470,7 +456,6 @@ export default {
 		},
 		videoShow(video) {
 			this.vidShow = true;
-			console.log(video);
 			this.singleVideo = video;
 		},
 	},

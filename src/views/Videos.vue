@@ -158,8 +158,6 @@ import ShowVideo from "@/components/ShowVideo.vue";
 import api from "@/api";
 import Artplayer from "artplayer/examples/vue/Artplayer";
 
-let history = JSON.parse(localStorage.getItem("recent_searches"));
-
 export default {
 	components: {
 		VueEasyLightbox,
@@ -179,7 +177,7 @@ export default {
 			loading: false,
 			result_count: 0,
 			next_token: "",
-			recent_searches: history ? history : [],
+			recent_searches: [],
 			videos: [],
 			style: {
 				width: "100%",
@@ -191,6 +189,11 @@ export default {
 			include: {},
 			artplayer: true,
 		};
+	},
+	created() {
+		this.recent_searches = JSON.parse(
+			localStorage.getItem("recent_searches")
+		);
 	},
 	methods: {
 		getVideos() {
@@ -482,6 +485,11 @@ export default {
 		videoShow(video) {
 			this.vidShow = true;
 			this.singleVideo = video;
+		},
+	},
+	watch: {
+		$route(to, from) {
+			this.show = false;
 		},
 	},
 };

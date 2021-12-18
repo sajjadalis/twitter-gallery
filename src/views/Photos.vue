@@ -155,8 +155,6 @@
 import VueEasyLightbox from "vue-easy-lightbox";
 import api from "@/api";
 
-let history = JSON.parse(localStorage.getItem("recent_searches"));
-
 export default {
 	components: {
 		VueEasyLightbox,
@@ -175,10 +173,15 @@ export default {
 			loading: false,
 			result_count: 0,
 			next_token: "",
-			recent_searches: history ? history : [],
+			recent_searches: [],
 			videos: [],
 			include: {},
 		};
+	},
+	created() {
+		this.recent_searches = JSON.parse(
+			localStorage.getItem("recent_searches")
+		);
 	},
 	methods: {
 		getPhotos() {

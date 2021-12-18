@@ -1,8 +1,9 @@
 <template>
-	<transition name="ctvf-popup" type="animation">
-		<div class="ctvf-vidshow">
-			<div class="ctvf-video">
+	<transition name="popup" type="animation">
+		<div class="vidshow">
+			<div class="video">
 				<Artplayer
+					v-if="artplayer"
 					:option="{
 						url: video.url,
 						poster: video.image,
@@ -20,8 +21,20 @@
 					}"
 					:style="style"
 				/>
+				<div v-else>
+					<video
+						controls
+						playsinline
+						loop
+						autoplay
+						class="native-player"
+					>
+						<!-- Video files -->
+						<source :src="video.url" type="video/mp4" />
+					</video>
+				</div>
 			</div>
-			<button class="ctvf-close" @click="$emit('close')">
+			<button class="close" @click="$emit('close')">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-7 w-7 m-auto"
@@ -43,14 +56,14 @@
 <script>
 import Artplayer from "artplayer/examples/vue/Artplayer";
 export default {
-	props: ["video", "dipslay"],
+	props: ["video", "dipslay", "artplayer"],
 	components: {
 		Artplayer,
 	},
 	data() {
 		return {
 			style: {
-				width: "100%",
+				width: "auto",
 				height: "100%",
 				margin: "0 auto 10px",
 			},

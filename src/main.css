@@ -77,12 +77,17 @@
 
 
 /* VIDEO POPUP */
-.ctvf-popup-enter {
+.popup-enter {
     opacity: 0
 }
-.ctvf-popup-enter-active {
+.popup-enter-active {
     animation: pop-in 1s ease-out forwards;
     transform: opacity 1s;
+}
+.native-player {
+    width: auto;
+    height: 95vh;
+    margin: auto
 }
 
 @keyframes pop-in {
@@ -101,7 +106,7 @@
         transform: translateY(50px);
     }
 }
-.ctvf-vidshow {
+.vidshow {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -113,7 +118,7 @@
     z-index: 9999;
     cursor: pointer;
 }
-.ctvf-vidshow .ctvf-video {
+.vidshow .video {
     position: relative;
     top: calc(50% - 360px);
     width: 90%; 
@@ -121,7 +126,7 @@
     margin: auto;
 	z-index: 99999;
 }
-.ctvf-close {
+.close {
     position: fixed;
     top: 17px;
     right: 20px;
@@ -132,7 +137,7 @@
     height: 50px;
     text-align: center;
 }
-.ctvf-close:hover {
+.close:hover {
     background-color: #222;
 }
 

@@ -30,6 +30,14 @@
 			<div class="w-32 mr-2">
 				<t-input type="number" v-model="results" />
 			</div>
+			<div class="relative w-12 mr-2">
+				<label class="absolute top-0 -mt-5 text-xs">Retweets</label>
+				<t-checkbox v-model="include.retweets" />
+			</div>
+			<div class="relative w-12 mr-2">
+				<label class="absolute top-0 -mt-5 text-xs">Replies</label>
+				<t-checkbox v-model="include.replies" />
+			</div>
 			<div class="w-60">
 				<t-button type="submit" class="uppercase font-bold"
 					>Get Photos</t-button
@@ -145,16 +153,13 @@
 <script>
 // Method.3 Local registration
 import VueEasyLightbox from "vue-easy-lightbox";
-import axios from "axios";
 import api from "@/api";
-import Artplayer from "artplayer/examples/vue/Artplayer";
 
 let history = JSON.parse(localStorage.getItem("recent_searches"));
 
 export default {
 	components: {
 		VueEasyLightbox,
-		Artplayer,
 	},
 	data() {
 		return {
@@ -172,11 +177,7 @@ export default {
 			next_token: "",
 			recent_searches: history ? history : [],
 			videos: [],
-			style: {
-				width: "100%",
-				height: "300px",
-				margin: "0 auto 10px",
-			},
+			include: {},
 		};
 	},
 	methods: {
@@ -211,9 +212,20 @@ export default {
 						return;
 					}
 
+					let exclude = "exclude=retweets,replies&";
+					if (this.include.retweets && this.include.replies) {
+						exclude = "";
+					} else if (this.include.retweets) {
+						exclude = "exclude=replies&";
+					} else if (this.include.replies) {
+						exclude = "exclude=retweets&";
+					}
+
 					this.userId = res.data.data.id;
 
-					this.search_params = `max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
+					this.search_params = `${exclude}max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
+
+					console.log(this.search_params);
 
 					api.get(
 						`2/users/${this.userId}/tweets?${this.search_params}`

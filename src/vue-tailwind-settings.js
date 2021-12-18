@@ -1,5 +1,6 @@
 import TAlert from "vue-tailwind/dist/t-alert";
 import TInput from "vue-tailwind/dist/t-input";
+import TCheckbox from "vue-tailwind/dist/t-checkbox";
 import TButton from "vue-tailwind/dist/t-button";
 
 const settings = {
@@ -7,6 +8,12 @@ const settings = {
 		component: TInput,
 		props: {
 			classes: "border-2 block w-full rounded text-gray-800",
+		},
+	},
+	"t-checkbox": {
+		component: TCheckbox,
+		props: {
+			classes: "border-2 block w-full h-full rounded text-red-500",
 		},
 	},
 	"t-button": {

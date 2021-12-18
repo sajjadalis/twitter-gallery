@@ -30,6 +30,24 @@
 			<div class="w-32 mr-2">
 				<t-input type="number" v-model="results" />
 			</div>
+			<div class="relative w-12 mr-2">
+				<label class="absolute top-0 -mt-5 text-2xs">Art Player</label>
+				<t-checkbox class="text-blue-500" v-model="artplayer" />
+			</div>
+			<div class="relative w-12 mr-2">
+				<label class="absolute top-0 -mt-5 text-2xs">Retweets</label>
+				<t-checkbox
+					class="text-blue-500 w-full"
+					v-model="include.retweets"
+				/>
+			</div>
+			<div class="relative w-12 mr-2">
+				<label class="absolute top-0 -mt-5 text-2xs">Replies</label>
+				<t-checkbox
+					class="text-blue-500 w-full"
+					v-model="include.replies"
+				/>
+			</div>
 			<div class="w-60">
 				<t-button
 					type="submit"
@@ -115,6 +133,7 @@
 		<ShowVideo
 			v-if="vidShow"
 			:video="singleVideo"
+			:artplayer="artplayer"
 			@close="vidShow = false"
 		/>
 
@@ -123,7 +142,7 @@
 		<t-button
 			v-if="next_token"
 			@click.prevent="nextVideos(next_token)"
-			class="uppercase font-bold my-5"
+			class="uppercase font-bold my-5 bg-blue-500 hover:bg-blue-600"
 		>
 			Load More Videos
 		</t-button>
@@ -160,9 +179,8 @@ export default {
 			search_params: "",
 			results: 50,
 			found: 0,
-			imgs: [], // Img Url , string or Array of string
 			visible: false,
-			index: 0, // default: 0,
+			index: 0,
 			msg: "",
 			loading: false,
 			result_count: 0,
@@ -176,6 +194,8 @@ export default {
 			},
 			vidShow: false,
 			singleVideo: {},
+			include: {},
+			artplayer: true,
 		};
 	},
 	methods: {
@@ -213,7 +233,18 @@ export default {
 
 					this.userId = res.data.data.id;
 
-					this.search_params = `max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
+					let exclude = "exclude=retweets,replies&";
+					if (this.include.retweets && this.include.replies) {
+						exclude = "";
+					} else if (this.include.retweets) {
+						exclude = "exclude=replies&";
+					} else if (this.include.replies) {
+						exclude = "exclude=retweets&";
+					}
+
+					this.search_params = `${exclude}max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
+
+					console.log(this.search_params);
 
 					api.get(
 						`2/users/${this.userId}/tweets?${this.search_params}`

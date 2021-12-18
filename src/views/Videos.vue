@@ -36,17 +36,11 @@
 			</div>
 			<div class="relative w-12 mr-2">
 				<label class="absolute top-0 -mt-5 text-2xs">Retweets</label>
-				<t-checkbox
-					class="text-blue-500 w-full"
-					v-model="include.retweets"
-				/>
+				<t-checkbox class="text-blue-500" v-model="include.retweets" />
 			</div>
 			<div class="relative w-12 mr-2">
 				<label class="absolute top-0 -mt-5 text-2xs">Replies</label>
-				<t-checkbox
-					class="text-blue-500 w-full"
-					v-model="include.replies"
-				/>
+				<t-checkbox class="text-blue-500" v-model="include.replies" />
 			</div>
 			<div class="w-60">
 				<t-button

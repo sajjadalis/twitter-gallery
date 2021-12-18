@@ -1,5 +1,6 @@
 module.exports = {
-	content: ["./src/**/*.{html,js, vue}"],
+	purge: ["./**/*.{js,vue}"],
+	// purge: ["./src/views/**/*.vue", "./src/components/**/*.vue"],
 	variants: {
 		extend: {
 			opacity: ["disabled"],

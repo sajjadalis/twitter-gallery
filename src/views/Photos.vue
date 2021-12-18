@@ -31,11 +31,11 @@
 				<t-input type="number" v-model="results" />
 			</div>
 			<div class="relative w-12 mr-2">
-				<label class="absolute top-0 -mt-5 text-xs">Retweets</label>
+				<label class="absolute top-0 -mt-5 text-2xs">Retweets</label>
 				<t-checkbox v-model="include.retweets" />
 			</div>
 			<div class="relative w-12 mr-2">
-				<label class="absolute top-0 -mt-5 text-xs">Replies</label>
+				<label class="absolute top-0 -mt-5 text-2xs">Replies</label>
 				<t-checkbox v-model="include.replies" />
 			</div>
 			<div class="w-60">

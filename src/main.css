@@ -1,10 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-#app {
-    border-width: 10px 0 0;
-    -o-border-image: linear-gradient(139deg, #fb8817, #ff4b01, #c12127, #e02aff) 3;
-    border-image: linear-gradient(139deg, #fb8817, #ff4b01, #c12127, #e02aff) 3;
+.top-gradient {
+    -o-background-image: linear-gradient(139deg, #fb8817, #ff4b01, #c12127, #e02aff);
+    background-image: linear-gradient(139deg, #fb8817, #ff4b01, #c12127, #e02aff);
+}
+.top-gradient-blue {
+    background-image: linear-gradient(139deg, #0ea5e9, #1d4ed8, #3730a3, #8b5cf6);
 }
 .container {
 	margin: auto;

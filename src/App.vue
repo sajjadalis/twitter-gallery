@@ -1,5 +1,12 @@
 <template>
 	<div id="app">
+		<div
+			:class="[
+				$route.name == 'Videos'
+					? 'top-gradient-blue h-3'
+					: 'top-gradient h-3',
+			]"
+		></div>
 		<div class="container">
 			<div class="flex justify-between items-center">
 				<h1

@@ -59,6 +59,7 @@
 			<button
 				class="text-gray-400 hover:text-white absolute top-2/4 right-0 -mt-8 mr-5"
 				@click="$emit('next')"
+				@keyup.right="$emit('next')"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -79,6 +80,7 @@
 			<button
 				class="text-gray-400 hover:text-white absolute top-2/4 left-0 -mt-8 ml-5"
 				@click="$emit('prev')"
+				@keyup.left="$emit('prev')"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -104,6 +106,16 @@ export default {
 	props: ["video", "artplayer"],
 	components: {
 		Artplayer,
+	},
+	created() {
+		window.addEventListener("keydown", (e) => {
+			if (e.key == "ArrowLeft") {
+				this.$emit("prev");
+			}
+			if (e.key == "ArrowRight") {
+				this.$emit("next");
+			}
+		});
 	},
 	data() {
 		return {

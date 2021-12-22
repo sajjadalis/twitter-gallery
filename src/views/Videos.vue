@@ -117,25 +117,27 @@
 		<div v-if="videos.length > 0">
 			<masonry :cols="4" :gutter="10">
 				<div v-for="(video, i) in videos" :key="i">
-					<a href="#" @click.prevent="videoShow(video)"
+					<a href="#" @click.prevent="videoShow(video, i)"
 						><img class="item" :src="video.image"
 					/></a>
 				</div>
+				<ShowVideo
+					v-if="vidShow"
+					:video="singleVideo"
+					:artplayer="artplayer"
+					@close="vidShow = false"
+					@next="nextVideo"
+					@prev="prevVideo"
+					:key="'next' + index"
+				/>
 			</masonry>
 		</div>
-
-		<ShowVideo
-			v-if="vidShow"
-			:video="singleVideo"
-			:artplayer="artplayer"
-			@close="vidShow = false"
-		/>
 
 		<div v-if="loading" class="spinner my-10"></div>
 
 		<t-button
 			v-if="next_token"
-			@click.prevent="nextVideos(next_token)"
+			@click.prevent="moreVideos(next_token)"
 			class="uppercase font-bold my-5 bg-blue-500 hover:bg-blue-600"
 		>
 			Load More Videos
@@ -169,7 +171,7 @@ export default {
 			user: "BBCEarth",
 			userId: "",
 			search_params: "",
-			results: 50,
+			results: 10,
 			found: 0,
 			visible: false,
 			index: 0,
@@ -196,6 +198,36 @@ export default {
 		);
 	},
 	methods: {
+		videoShow(video, index) {
+			this.index = index;
+			console.log(this.index);
+			this.vidShow = true;
+			this.singleVideo = video;
+		},
+		nextVideo() {
+			this.index += 1;
+			console.log(this.index);
+			if (this.videos.length == this.index) {
+				this.index = 0;
+				let video = this.videos[0];
+				this.videoShow(video, this.index);
+			} else {
+				let video = this.videos[this.index];
+				this.videoShow(video, this.index);
+			}
+		},
+		prevVideo() {
+			this.index -= 1;
+			console.log(this.index);
+			if (this.index == -1) {
+				this.index = this.videos.length - 1;
+				let video = this.videos[this.index];
+				this.videoShow(video, this.index);
+			} else {
+				let video = this.videos[this.index];
+				this.videoShow(video, this.index);
+			}
+		},
 		getVideos() {
 			this.videos = [];
 			this.msg = "";
@@ -241,13 +273,13 @@ export default {
 
 					this.search_params = `${exclude}max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
 
-					console.log(this.search_params);
+					// console.log(this.search_params);
 
 					api.get(
 						`2/users/${this.userId}/tweets?${this.search_params}`
 					)
 						.then((res) => {
-							console.log(res.data);
+							// console.log(res.data);
 
 							if (res.data.errors) {
 								this.msg = res.data.errors[0].detail;
@@ -302,7 +334,7 @@ export default {
 										return newo;
 									}, {});
 								});
-							console.log(result);
+							// console.log(result);
 							result.forEach((tweet) => {
 								api.get(
 									`1.1/statuses/show/${tweet.id}.json?tweet_mode=extended`
@@ -364,20 +396,13 @@ export default {
 				});
 			}
 		},
-		showImg(index) {
-			this.index = index;
-			this.visible = true;
-		},
-		handleHide() {
-			this.visible = false;
-		},
-		nextVideos(token) {
+		moreVideos(token) {
 			this.loading = true;
 
 			api.get(
 				`2/users/${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
 			).then((res) => {
-				console.log(res.data);
+				// console.log(res.data);
 
 				if (!res.data.hasOwnProperty("includes")) {
 					this.msg = `No more photo found`;
@@ -481,10 +506,6 @@ export default {
 				"recent_searches",
 				JSON.stringify(this.recent_searches)
 			);
-		},
-		videoShow(video) {
-			this.vidShow = true;
-			this.singleVideo = video;
 		},
 	},
 	watch: {

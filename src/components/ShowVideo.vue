@@ -1,7 +1,9 @@
 <template>
 	<transition name="popup" type="animation">
-		<div class="vidshow">
-			<div class="video">
+		<div
+			class="overlay fixed top-0 left-0 bottom-0 right-0 z-10 bg-gray-900 w-full h-screen bg-opacity-80"
+		>
+			<div class="relative z-50 w-85 h-95 m-auto mt-4">
 				<Artplayer
 					v-if="artplayer"
 					:option="{
@@ -34,10 +36,13 @@
 					</video>
 				</div>
 			</div>
-			<button class="close" @click="$emit('close')">
+			<button
+				class="text-gray-400 hover:text-white absolute top-0 right-0 mt-4 mr-4"
+				@click="$emit('close')"
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					class="h-7 w-7 m-auto"
+					class="h-8 w-8 m-auto"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -50,13 +55,53 @@
 					/>
 				</svg>
 			</button>
+
+			<button
+				class="text-gray-400 hover:text-white absolute top-2/4 right-0 -mt-8 mr-5"
+				@click="$emit('next')"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-8 w-8"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M14 5l7 7m0 0l-7 7m7-7H3"
+					/>
+				</svg>
+			</button>
+
+			<button
+				class="text-gray-400 hover:text-white absolute top-2/4 left-0 -mt-8 ml-5"
+				@click="$emit('prev')"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-8 w-8"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M10 19l-7-7m0 0l7-7m-7 7h18"
+					/>
+				</svg>
+			</button>
 		</div>
 	</transition>
 </template>
 <script>
 import Artplayer from "artplayer/examples/vue/Artplayer";
 export default {
-	props: ["video", "dipslay", "artplayer"],
+	props: ["video", "artplayer"],
 	components: {
 		Artplayer,
 	},
@@ -69,5 +114,16 @@ export default {
 			},
 		};
 	},
+	// methods: {
+	// 	close(e) {
+	// 		let classes = e.path[0].className;
+	// 		console.log(classes);
+	// 		let close = classes.includes("overlay");
+	// 		if (close) {
+	// 			this.$emit("close");
+	// 			console.log("close video");
+	// 		}
+	// 	},
+	// },
 };
 </script>

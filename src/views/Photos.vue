@@ -151,12 +151,13 @@
 </template>
 
 <script>
-// Method.3 Local registration
+import ShowImage from "@/components/ShowImage.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import api from "@/api";
 
 export default {
 	components: {
+		ShowImage,
 		VueEasyLightbox,
 	},
 	data() {

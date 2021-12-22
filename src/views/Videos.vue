@@ -198,36 +198,6 @@ export default {
 		);
 	},
 	methods: {
-		videoShow(video, index) {
-			this.index = index;
-			console.log(this.index);
-			this.vidShow = true;
-			this.singleVideo = video;
-		},
-		nextVideo() {
-			this.index += 1;
-			console.log(this.index);
-			if (this.videos.length == this.index) {
-				this.index = 0;
-				let video = this.videos[0];
-				this.videoShow(video, this.index);
-			} else {
-				let video = this.videos[this.index];
-				this.videoShow(video, this.index);
-			}
-		},
-		prevVideo() {
-			this.index -= 1;
-			console.log(this.index);
-			if (this.index == -1) {
-				this.index = this.videos.length - 1;
-				let video = this.videos[this.index];
-				this.videoShow(video, this.index);
-			} else {
-				let video = this.videos[this.index];
-				this.videoShow(video, this.index);
-			}
-		},
 		getVideos() {
 			this.videos = [];
 			this.msg = "";
@@ -394,6 +364,36 @@ export default {
 							console.log(err);
 						});
 				});
+			}
+		},
+		videoShow(video, index) {
+			this.index = index;
+			console.log(this.index);
+			this.vidShow = true;
+			this.singleVideo = video;
+		},
+		nextVideo() {
+			this.index += 1;
+			console.log(this.index);
+			if (this.videos.length == this.index) {
+				this.index = 0;
+				let video = this.videos[0];
+				this.videoShow(video, this.index);
+			} else {
+				let video = this.videos[this.index];
+				this.videoShow(video, this.index);
+			}
+		},
+		prevVideo() {
+			this.index -= 1;
+			console.log(this.index);
+			if (this.index == -1) {
+				this.index = this.videos.length - 1;
+				let video = this.videos[this.index];
+				this.videoShow(video, this.index);
+			} else {
+				let video = this.videos[this.index];
+				this.videoShow(video, this.index);
 			}
 		},
 		moreVideos(token) {

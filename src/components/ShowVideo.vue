@@ -126,16 +126,14 @@ export default {
 			},
 		};
 	},
-	// methods: {
-	// 	close(e) {
-	// 		let classes = e.path[0].className;
-	// 		console.log(classes);
-	// 		let close = classes.includes("overlay");
-	// 		if (close) {
-	// 			this.$emit("close");
-	// 			console.log("close video");
-	// 		}
-	// 	},
-	// },
+	methods: {
+		close(e) {
+			let classes = e.path[0].className;
+			if (typeof classes == "string" && classes.indexOf("overlay") > -1) {
+				this.$emit("close");
+				// console.log("close video");
+			}
+		},
+	},
 };
 </script>

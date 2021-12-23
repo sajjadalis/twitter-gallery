@@ -110,7 +110,7 @@
 
 		<!-- all props & events -->
 		<div>
-			<vue-easy-lightbox
+			<!-- <vue-easy-lightbox
 				escDisabled
 				moveDisabled
 				:visible="visible"
@@ -118,6 +118,7 @@
 				:index="index"
 				@hide="handleHide"
 			></vue-easy-lightbox>
+
 			<masonry :cols="4" :gutter="10">
 				<div
 					v-for="(src, index) in imgs"
@@ -127,14 +128,32 @@
 				>
 					<img class="item" :src="src" />
 				</div>
-			</masonry>
+			</masonry> -->
+
+			<div v-if="imgs.length > 0">
+				<masonry :cols="4" :gutter="10">
+					<div v-for="(img, i) in imgs" :key="i">
+						<a href="#" @click.prevent="imageShow(img, i)"
+							><img class="item" :src="img"
+						/></a>
+					</div>
+					<ShowImage
+						v-if="imgShow"
+						:img="singleImage"
+						@close="imgShow = false"
+						@next="nextImage"
+						@prev="prevImage"
+						:key="'next' + index"
+					/>
+				</masonry>
+			</div>
 		</div>
 
 		<div v-if="loading" class="spinner my-10"></div>
 
 		<t-button
 			v-if="next_token"
-			@click.prevent="nextPhotos(next_token)"
+			@click.prevent="morePhotos(next_token)"
 			class="uppercase font-bold my-5"
 		>
 			Load More Photos
@@ -168,6 +187,8 @@ export default {
 			results: 50,
 			found: 0,
 			imgs: [], // Img Url , string or Array of string
+			singleImage: "",
+			imgShow: false,
 			visible: false,
 			index: 0, // default: 0,
 			msg: "",
@@ -175,7 +196,6 @@ export default {
 			result_count: 0,
 			next_token: "",
 			recent_searches: [],
-			videos: [],
 			include: {},
 		};
 	},
@@ -185,6 +205,34 @@ export default {
 		);
 	},
 	methods: {
+		imageShow(img, index) {
+			this.index = index;
+			this.imgShow = true;
+			this.singleImage = img;
+		},
+		nextImage() {
+			this.index += 1;
+			if (this.imgs.length == this.index) {
+				this.index = 0;
+				this.singleImage = this.imgs[0];
+				// let image = this.imgs[0];
+				// this.imageShow(image, this.index);
+			} else {
+				let image = this.imgs[this.index];
+				this.imageShow(image, this.index);
+			}
+		},
+		prevImage() {
+			this.index -= 1;
+			if (this.index == -1) {
+				this.index = this.imgs.length - 1;
+				let image = this.imgs[this.index];
+				this.imageShow(image, this.index);
+			} else {
+				let image = this.imgs[this.index];
+				this.imageShow(image, this.index);
+			}
+		},
 		getPhotos() {
 			this.imgs = [];
 			this.msg = "";
@@ -235,7 +283,7 @@ export default {
 						`2/users/${this.userId}/tweets?${this.search_params}`
 					)
 						.then((res) => {
-							console.log(res.data);
+							// console.log(res.data);
 
 							if (res.data.errors) {
 								this.msg = res.data.errors[0].detail;
@@ -283,13 +331,13 @@ export default {
 		handleHide() {
 			this.visible = false;
 		},
-		nextPhotos(token) {
+		morePhotos(token) {
 			this.loading = true;
 
 			api.get(
 				`2/users/${this.userId}/tweets?${this.search_params}&pagination_token=${token}`
 			).then((res) => {
-				console.log(res.data);
+				// console.log(res.data);
 
 				if (!res.data.hasOwnProperty("includes")) {
 					this.msg = `No more photo found`;

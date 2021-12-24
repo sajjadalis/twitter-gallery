@@ -20,7 +20,7 @@ You will need to create an app in [Twitter Developer Portal](https://developer.t
 - Create an App in Twitter Developer Portal
 - Generate Bearer Token
 - Clone the Repository
-- Add Bearer Token in .env file. e.g. `VUE_APP_TWITTER_TOKEN=AAAAAAToken.....`
+- Add Bearer Token in `.env` file. e.g. `VUE_APP_TWITTER_TOKEN=YourTokenHere.....`
 - Run `npm install` or `yarn add` in Terminal to add all dependencies
 - Run `npm run serve` or `yarn serve` for Compiles and hot-reload for development
 - Run `npm run build` or `yarn build` for Compiles and minifies for production

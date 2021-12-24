@@ -140,6 +140,7 @@
 					<ShowImage
 						v-if="imgShow"
 						:img="singleImage"
+						:user="user"
 						@close="imgShow = false"
 						@next="nextImage"
 						@prev="prevImage"

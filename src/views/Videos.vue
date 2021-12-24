@@ -133,7 +133,7 @@
 			</masonry>
 		</div>
 
-		<div v-if="loading" class="spinner my-10"></div>
+		<div v-if="loading" class="spinner spinner-blue my-10"></div>
 
 		<t-button
 			v-if="next_token"

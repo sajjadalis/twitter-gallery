@@ -7,6 +7,7 @@
 					name="twt_usr"
 					data-lpignore="true"
 					v-model="user"
+					placeholder="Twitter Username"
 				/>
 				<button
 					class="absolute top-0 right-0 mt-3 mr-3 text-gray-400 hover:text-gray-600"
@@ -247,8 +248,6 @@ export default {
 				);
 			}
 
-			// console.log(JSON.parse(localStorage.getItem("recent_searches")));
-
 			if (this.results < 5) {
 				this.msg = "Minimum results for tweets can not be less than 5";
 				this.loading = false;
@@ -277,8 +276,6 @@ export default {
 					this.userId = res.data.data.id;
 
 					this.search_params = `${exclude}max_results=${this.results}&tweet.fields=attachments&expansions=attachments.media_keys&media.fields=media_key,type,url,preview_image_url`;
-
-					console.log(this.search_params);
 
 					api.get(
 						`2/users/${this.userId}/tweets?${this.search_params}`

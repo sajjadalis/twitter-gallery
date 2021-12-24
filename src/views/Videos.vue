@@ -7,6 +7,7 @@
 					name="twt_usr"
 					data-lpignore="true"
 					v-model="user"
+					placeholder="Twitter Username"
 				/>
 				<button
 					class="absolute top-0 right-0 mt-3 mr-3 text-gray-400 hover:text-gray-600"
@@ -27,8 +28,12 @@
 					</svg>
 				</button>
 			</div>
-			<div class="w-32 mr-2">
-				<t-input type="number" v-model="results" />
+			<div class="w-40 mr-2">
+				<t-input
+					type="number"
+					v-model="results"
+					placeholder="Tweets (5 to 100)"
+				/>
 			</div>
 			<div class="relative w-12 mr-2">
 				<label class="absolute top-0 -mt-5 text-2xs">Art Player</label>
@@ -147,7 +152,13 @@
 			All Done. No more tweets found...
 		</t-alert>
 
-		<t-alert class="my-5" v-if="msg" variant="danger" show>
+		<t-alert
+			class="my-5"
+			v-if="msg"
+			variant="danger"
+			:dismissible="false"
+			show
+		>
 			{{ msg }}
 		</t-alert>
 	</div>
@@ -171,7 +182,7 @@ export default {
 			user: "BBCEarth",
 			userId: "",
 			search_params: "",
-			results: 10,
+			results: 50,
 			found: 0,
 			visible: false,
 			index: 0,

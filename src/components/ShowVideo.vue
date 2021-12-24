@@ -2,6 +2,7 @@
 	<transition name="popup" type="animation">
 		<div
 			class="overlay fixed top-0 left-0 bottom-0 right-0 z-10 bg-gray-900 w-full h-screen bg-opacity-80"
+			@click="close"
 		>
 			<div class="relative z-50 w-85 h-95 m-auto mt-4">
 				<Artplayer
@@ -129,9 +130,9 @@ export default {
 	methods: {
 		close(e) {
 			let classes = e.path[0].className;
-			if (typeof classes == "string" && classes.indexOf("overlay") > -1) {
+			if (typeof classes == "string" && classes.includes("overlay")) {
 				this.$emit("close");
-				// console.log("close video");
+				// console.log("close image");
 			}
 		},
 	},

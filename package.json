@@ -1,5 +1,5 @@
 {
-  "name": "vue-tweeties",
+  "name": "twitter-gallery",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,8 +12,6 @@
     "artplayer": "^4.0.8",
     "autoprefixer": "^9.8.8",
     "axios": "^0.24.0",
-    "fslightbox-vue": "^2.0.1",
-    "lodash": "^4.17.21",
     "postcss": "^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "vue": "^2.6.11",

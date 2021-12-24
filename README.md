@@ -1,4 +1,4 @@
-# vue-tweeties
+# Twitter Gallery
 
 ## Project setup
 ```

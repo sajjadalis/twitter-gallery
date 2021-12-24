@@ -1,19 +1,28 @@
 # Twitter Gallery
 
-## Project setup
-```
-npm install
-```
+Twitter Gallery (based on Vue.js) is using Twitter Official API to fetch media (photos and videos) from a Twitter Profile and then display it in a masonry gallery layout.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+**[Demo Preview (Images)](https://pinboard.opera.com/view/da9b047c-8317-4432-8fbd-7a5d04f351d3)**
 
-### Compiles and minifies for production
-```
-npm run build
-```
+You will need to create an app in [Twitter Developer Portal](https://developer.twitter.com) and get [Bearer Token](https://i.imgur.com/tGBFcNq.png).
+
+### Features:
+- Search Photos
+- Search Videos
+- Preview Large Image or Video in Lightbox
+- Play Video in ArtPlayer or Native HTML5 Player
+- Open Image in New Tab for Full View, Save Image, Zoom-in, Zoom-out, Rotate
+
+### Requirement
+[Node.js](https://nodejs.org/en/download/) for development & build
+
+### Project setup
+- Create an App in Twitter Developer Portal
+- Generate Bearer Token
+- Clone the Repository
+- Run `npm install` or `yarn add` in Terminal to add all dependencies
+- Run `npm run serve` or `yarn serve` for Compiles and hot-reload for development
+- Run `npm run build` or `yarn build` for Compiles and minifies for production
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/) & [Vue.js documentation](https://vuejs.org/v2/guide/).

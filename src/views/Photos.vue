@@ -200,7 +200,7 @@ export default {
 			include: {},
 		};
 	},
-	created() {
+	mounted() {
 		this.recent_searches = JSON.parse(
 			localStorage.getItem("recent_searches")
 		);

@@ -28,8 +28,12 @@
 					</svg>
 				</button>
 			</div>
-			<div class="w-32 mr-2">
-				<t-input type="number" v-model="results" />
+			<div class="w-40 mr-2">
+				<t-input
+					type="number"
+					v-model="results"
+					placeholder="Tweets (5 to 100)"
+				/>
 			</div>
 			<div class="relative w-12 mr-2">
 				<label class="absolute top-0 -mt-5 text-2xs">Retweets</label>
@@ -165,7 +169,13 @@
 			All Done. No more tweets found...
 		</t-alert>
 
-		<t-alert class="my-5" v-if="msg" variant="danger" show>
+		<t-alert
+			class="my-5"
+			v-if="msg"
+			variant="danger"
+			:dismissible="false"
+			show
+		>
 			{{ msg }}
 		</t-alert>
 	</div>

@@ -16,17 +16,21 @@
 						title="Open in New Tab"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
+							width="24"
+							height="24"
 							viewBox="0 0 24 24"
+							fill="none"
 							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-5 w-5"
 						>
 							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-							/></svg
+								d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+							></path>
+							<polyline points="15 3 21 3 21 9"></polyline>
+							<line x1="10" y1="14" x2="21" y2="3"></line></svg
 					></a>
 					<a
 						href="#"
@@ -35,17 +39,21 @@
 						title="Save"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
+							width="24"
+							height="24"
 							viewBox="0 0 24 24"
+							fill="none"
 							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-5 w-5"
 						>
 							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-							/></svg
+								d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+							></path>
+							<polyline points="17 21 17 13 7 13 7 21"></polyline>
+							<polyline points="7 3 7 8 15 8"></polyline></svg
 					></a>
 					<a
 						href="#"
@@ -54,17 +62,20 @@
 						title="Zoom In"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
+							width="24"
+							height="24"
 							viewBox="0 0 24 24"
+							fill="none"
 							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-5 w-5"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-							/></svg
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+							<line x1="11" y1="8" x2="11" y2="14"></line>
+							<line x1="8" y1="11" x2="14" y2="11"></line></svg
 					></a>
 					<a
 						href="#"
@@ -73,17 +84,19 @@
 						title="Zoom Out"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
+							width="24"
+							height="24"
 							viewBox="0 0 24 24"
+							fill="none"
 							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-5 w-5"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"
-							/></svg
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+							<line x1="8" y1="11" x2="14" y2="11"></line></svg
 					></a>
 					<a
 						href="#"
@@ -92,17 +105,20 @@
 						title="Rotate Anti-Clockwise"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
+							width="24"
+							height="24"
 							viewBox="0 0 24 24"
+							fill="none"
 							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-5 w-5"
 						>
+							<polyline points="1 4 1 10 7 10"></polyline>
 							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"
-							/></svg
+								d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"
+							></path></svg
 					></a>
 					<a
 						href="#"
@@ -111,17 +127,20 @@
 						title="Rotate Clockwise"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-5 w-5"
-							fill="none"
+							width="24"
+							height="24"
 							viewBox="0 0 24 24"
+							fill="none"
 							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="h-5 w-5"
 						>
+							<polyline points="23 4 23 10 17 10"></polyline>
 							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-							/></svg
+								d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"
+							></path></svg
 					></a>
 				</div>
 			</div>

@@ -1,6 +1,9 @@
 # Twitter Gallery
 
-Twitter Gallery (based on Vue.js) is using Twitter Official API to fetch media (photos and videos) from a Twitter Profile and then display it in a masonry gallery layout.
+**BETTER ALTERNATIVE WITH VUE 3 + VITE & MANY MORE FEATURES**
+[https://github.com/sajjadalis/twitter-media-gallery](https://github.com/sajjadalis/twitter-media-gallery)
+
+Twitter Gallery (based on Vue 2) is using Twitter Official API to fetch media (photos and videos) from a Twitter Profile and then display it in a masonry gallery layout.
 
 **[Demo Preview (Images)](https://pinboard.opera.com/view/da9b047c-8317-4432-8fbd-7a5d04f351d3)**
 
@@ -14,7 +17,8 @@ You will need to create an app in [Twitter Developer Portal](https://developer.t
 - Open Image in New Tab for Full View, Save Image, Zoom-in, Zoom-out, Rotate
 
 ### Requirement
-[Node.js](https://nodejs.org/en/download/) for development & build
+- Developer access to [Twitter API](https://developer.twitter.com)
+- [Node.js](https://nodejs.org/en/download/) for development & build
 
 ### Project setup
 - Create an App in Twitter Developer Portal

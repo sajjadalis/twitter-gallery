@@ -1,6 +1,6 @@
 # Twitter Gallery
 
-**BETTER ALTERNATIVE WITH VUE 3 + VITE & MANY MORE FEATURES**
+### BETTER ALTERNATIVE WITH VUE 3 + VITE
 [https://github.com/sajjadalis/twitter-media-gallery](https://github.com/sajjadalis/twitter-media-gallery)
 
 Twitter Gallery (based on Vue 2) is using Twitter Official API to fetch media (photos and videos) from a Twitter Profile and then display it in a masonry gallery layout.
